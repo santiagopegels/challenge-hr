@@ -13,6 +13,7 @@ class StockTradesApiMediumTest extends TestCase
 
     public function test_should_create_a_new_trade_of_buy_type()
     {
+        $this->withoutExceptionHandling();
         $user23_buy_ABX = [
             'type' => 'buy',
             'user_id' => 23,
@@ -22,7 +23,7 @@ class StockTradesApiMediumTest extends TestCase
             "timestamp" => 1531522701000
         ];
 
-        $response = $this->postJson('/trades', $user23_buy_ABX);
+        $response = $this->postJson('/api/v1/trades', $user23_buy_ABX);
 
         $response
             ->assertStatus(201)
@@ -40,7 +41,7 @@ class StockTradesApiMediumTest extends TestCase
             "timestamp" => 1521522701000,
         ];
 
-        $response = $this->postJson('/trades', $user23_sell_AAC);
+        $response = $this->postJson('/api/v1/trades', $user23_sell_AAC);
 
         $response
             ->assertStatus(201)
@@ -51,7 +52,7 @@ class StockTradesApiMediumTest extends TestCase
     {
         $trades = factory(Trade::class, 5)->create();
 
-        $response = $this->getJson('/trades');
+        $response = $this->getJson('/api/v1/trades');
 
         $response
             ->assertStatus(200)
@@ -62,7 +63,7 @@ class StockTradesApiMediumTest extends TestCase
     {
         factory(Trade::class, 5)->create();
 
-        $response = $this->getJson('/trades?type=test');
+        $response = $this->getJson('/api/v1/trades?type=test');
 
         $response
             ->assertStatus(200)
@@ -87,7 +88,7 @@ class StockTradesApiMediumTest extends TestCase
             'user_id' => 25
         ]);
 
-        $response = $this->getJson('/trades?user_id=23');
+        $response = $this->getJson('/api/v1/trades?user_id=23');
 
         $response
             ->assertStatus(200)
@@ -98,7 +99,7 @@ class StockTradesApiMediumTest extends TestCase
     {
         factory(Trade::class, 5)->create();
 
-        $response = $this->getJson('/trades?user_id=3233');
+        $response = $this->getJson('/api/v1/trades?user_id=3233');
 
         $response
             ->assertStatus(200)
@@ -122,7 +123,7 @@ class StockTradesApiMediumTest extends TestCase
             'type' => 'sell',
         ]);
 
-        $response = $this->getJson('/trades?user_id=23&type=buy');
+        $response = $this->getJson('/api/v1/trades?user_id=23&type=buy');
 
         $response
             ->assertStatus(200)
@@ -146,7 +147,7 @@ class StockTradesApiMediumTest extends TestCase
             'type' => 'buy',
         ]);
 
-        $response = $this->getJson('/trades?user_id=23&type=sell');
+        $response = $this->getJson('/api/v1/trades?user_id=23&type=sell');
 
         $response
             ->assertStatus(200)
@@ -157,7 +158,7 @@ class StockTradesApiMediumTest extends TestCase
     {
         $trade = factory(Trade::class)->create();
 
-        $response = $this->getJson("/trades/{$trade->id}");
+        $response = $this->getJson("/api/v1/trades/{$trade->id}");
 
         $response
             ->assertStatus(200)
@@ -166,7 +167,7 @@ class StockTradesApiMediumTest extends TestCase
 
     public function test_should_get_404_if_the_trade_ID_does_not_exist()
     {
-        $response = $this->getJson('/trades/32323');
+        $response = $this->getJson('/api/v1/trades/32323');
 
         $response
             ->assertStatus(404)
@@ -177,7 +178,7 @@ class StockTradesApiMediumTest extends TestCase
     {
         $trade = factory(Trade::class)->create();
 
-        $response = $this->putJson("/trades/{$trade->id}", [
+        $response = $this->putJson("/api/v1/trades/{$trade->id}", [
             'type' => 'buy',
             'user_id' => 23,
             'symbol' => 'ABX',
@@ -193,7 +194,7 @@ class StockTradesApiMediumTest extends TestCase
     {
         $trade = factory(Trade::class)->create();
 
-        $response = $this->patchJson("/trades/{$trade->id}", [
+        $response = $this->patchJson("/api/v1/trades/{$trade->id}", [
             'type' => 'buy',
             'user_id' => 23,
             'symbol' => 'ABX',
@@ -209,7 +210,7 @@ class StockTradesApiMediumTest extends TestCase
     {
         $trade = factory(Trade::class)->create();
 
-        $response = $this->delete("/trades/{$trade->id}");
+        $response = $this->delete("/api/v1/trades/{$trade->id}");
 
         $response->assertStatus(405);
     }

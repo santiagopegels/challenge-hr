@@ -2,4 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-/** Define here your routes */
+Route::post('/trades', [
+    'uses' => 'TradeController@store'
+]);
