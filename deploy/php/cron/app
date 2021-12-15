@@ -1,1 +1,0 @@
-* * * * * root /usr/bin/php7.4 /application/artisan schedule:run 

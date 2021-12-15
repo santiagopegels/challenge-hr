@@ -18,8 +18,8 @@ class Trade extends Model
         'timestamp',
     ];
 
-    protected $cast = [
-        'prince' => 'integer',
+    protected $casts = [
+        'price' => 'integer',
         'shares' => 'integer',
         'user_id' => 'integer',
         'timestamp' => 'date',
@@ -27,7 +27,7 @@ class Trade extends Model
 
     public function setTimestampAttribute($value)
     {
-        $this->attributes['timestamp'] = ! is_null($value)
+        $this->attributes['timestamp'] = !is_null($value)
             ? Carbon::createFromTimestampMs($value)
             : null;
     }
@@ -35,5 +35,14 @@ class Trade extends Model
     public function getTimestampAttribute()
     {
         return Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['timestamp'])->getTimestampMs();
+    }
+
+    public function scopeFilter($query, $filters)
+    {
+        return $query->when($filters['type'], function ($query) use ($filters) {
+            $query->where('type', $filters['type']);
+        })->when($filters['user_id'], function ($query) use ($filters) {
+            $query->where('user_id', $filters['user_id']);
+        });
     }
 }

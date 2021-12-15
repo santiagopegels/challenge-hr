@@ -13,7 +13,6 @@ class StockTradesApiMediumTest extends TestCase
 
     public function test_should_create_a_new_trade_of_buy_type()
     {
-        $this->withoutExceptionHandling();
         $user23_buy_ABX = [
             'type' => 'buy',
             'user_id' => 23,

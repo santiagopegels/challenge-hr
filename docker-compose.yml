@@ -1,88 +1,21 @@
 version: "3.8"
 services:
-  traefik:
-    image: traefik:v2.3
-    ports:
-      - 8080:8080
-      - ${APP_PORT:-80}:80
-      - ${APP_SSL_PORT:-443}:443
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./docker/traefik/traefik.yml:/etc/traefik/traefik.yml
-    networks:
-      - network_app
-
   app:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
     container_name: app
     tty: true
-    labels:
-      - traefik.http.routers.api.rule=HostRegexp(`${APP_HOST}`, `{subdomain:[a-z]+[\-]?[a-z]+}.${APP_HOST}`)
-    depends_on:
-      - traefik
-      - mariadb
-      - redis
     volumes:
       - .:/app
       - ${HOME}/.cache/composer:/home/application/.composer/cache
     environment:
       - APP_ENV=local
-    networks:
-      - network_app
-
-  mariadb:
-    image: mariadb:10.3.17
-    container_name: mariadb
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
-      MYSQL_DATABASE: "${DB_DATABASE}"
     ports:
-      - ${DB_PORT:-3306}:3306
-    networks:
-      - network_app
-    volumes:
-      - mysqldata:/var/lib/mysql
-
-  redis:
-    image: redis:alpine
-    container_name: redis
-    restart: unless-stopped
-    tty: true
-    ports:
-      - ${REDIS_PORT:-6379}:6379
-    networks:
-      - network_app
-    volumes:
-      - redisdata:/data
-
-  npm:
-    image: node:12.16
-    container_name: npm
-    working_dir: /app
-    volumes:
-      - .:/app
-    entrypoint: [ 'npm' ]
-    networks:
-      - network_app
-
-  mailhog:
-    image: mailhog/mailhog:latest
-    container_name: mailhog
-    ports:
-      - 8025:8025
+      - 8080:80
     networks:
       - network_app
 
 networks:
   network_app:
     driver: "bridge"
-
-volumes:
-  mysqldata:
-    driver: "local"
-
-  redisdata:
-    driver: "local"

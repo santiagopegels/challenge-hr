@@ -3,7 +3,6 @@
 /public/storage
 /storage/*.key
 /vendor
-/deploy/mysql-data
 .env
 .env.backup
 .phpunit.result.cache
